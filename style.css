@@ -4,15 +4,32 @@
 	background-color: #FF6600;
 }
 
+ul {
+	color: black;
+	/*background-color: #99EBFF;*/
+	border-style: outset;
+	border-width: 5px;
+	/*border-color: #FF6600;*/
+	border-style: solid;
+	padding: 5px;
+	padding-bottom: 15px;
+	margin:30px;
+}
+
 h1 {
+	font-family: "Georgia", Serif;
 	text-align: center;
 }
 
-ul {
-	color: black;
-	background-color: #99EBFF;
-	border-style: outset;
-	border-width: 5px;
-	border-color: #FF6600;
-	
+h2 {
+	text-align: center;
+	position: relative;
+}
+
+.task-holder {
+	position: relative;
+	padding-bottom:45px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	height:500px;
 }
