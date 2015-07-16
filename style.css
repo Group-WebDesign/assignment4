@@ -4,6 +4,10 @@
 	background-color: #FF6600;
 }
 
+.topclear {
+	clear:both;
+}
+
 ul {
 	color: black;
 	/*background-color: #99EBFF;*/
