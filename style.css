@@ -8,16 +8,16 @@
 	clear:both;
 }
 
-ul {
+
+ul	{
+	overflow-y: auto;
+	overflow-x: hidden;
 	color: black;
-	/*background-color: #99EBFF;*/
 	border-style: outset;
 	border-width: 5px;
-	/*border-color: #FF6600;*/
 	border-style: solid;
 	padding: 5px;
 	padding-bottom: 15px;
-	margin:30px;
 }
 
 h1 {
@@ -25,16 +25,4 @@ h1 {
 	text-align: center;
 }
 
-h2 {
-	text-align: center;
-	position: relative;
-}
-
-.task-holder {
-	position: relative;
-	padding-bottom:45px;
-	overflow-y: hidden;
-	overflow-x: hidden;
-	height:500px;
-}
 

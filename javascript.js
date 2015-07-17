@@ -45,9 +45,9 @@ function gist (description, id, html_url) {
 
 		url.innerHTML = this.url;
 
+		holder.appendChild(description);
 		holder.appendChild(url);
 		holder.appendChild(id);
-		holder.appendChild(description);
 
 		gistsDom.appendChild(holder);
 	}
@@ -64,19 +64,21 @@ function makeAjaxCall(url) {
 					var gists = serverResponse;
 					var gistsArray = [];
 					for (var i = 0; i < gists.length; i ++) {
+						if (gists[i].description == "") {
+							gists[i].description = "No description";
+						}
 						var g = new gist(gists[i].description, gists[i].id, gists[i].url);
+						
 						gistsArray.push(g);
 						g.convertToHtml();
 					}
-				}else {
+				} else {
 					alert("Error!");
 				}
 			} 
 		
 	}
 }
-
-
 
 makeAjaxCall(_url);
 
