@@ -12,21 +12,19 @@ window.onload = function() {
 			}
 		});
 	}
-
-	var trialGist = GET /gists/public;
 }
 
 function loadXMLDoc() {
-	var request;
+	var httpRequest;
 	if (window.XMLHttpRequest) {
-		request = new XMLHttpRequest();
+		httpRequest = new XMLHttpRequest();
 	}
 	else {
-		request = new ActiveXObject("Microsoft.XMLHTTP");
+		httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 }
 
-function gists (description, id, html_url) {
+function gist (description, id, html_url) {
 	this.description = description;
 	this.id = id;
 	this.url = html_url;
@@ -47,33 +45,36 @@ function gists (description, id, html_url) {
 
 		url.innerHTML = this.url;
 
-		holder.appendChild(html_url);
+		holder.appendChild(url);
 		holder.appendChild(id);
 		holder.appendChild(description);
 
 		gistsDom.appendChild(holder);
 	}
-
+}
 function makeAjaxCall(url) {
-	request.open("GET", url, true);
-	request.send(null);
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.open("GET", url, true);
+	httpRequest.send(null);
 
-	request.onreadystatechange = function() {
-		if(request.readyState == 4) {
-			if (request.status == 200) {
-				var serverResponse = JSON.parse(request.responseText);
-				var gists = serverResponse.data.gists;
-				var gistsArray = [];
-				for (var i = 0; i < gists.length; i ++) {
-					var g = new gists(gists[i].description, gists[i].id, gists[i].url);
-					gistsArray.push(g);
-					g.convertToHtml();
+	httpRequest.onreadystatechange = function() {
+			if(httpRequest.readyState == 4) {
+				if (httpRequest.status == 200) {
+					var serverResponse = JSON.parse(httpRequest.responseText);
+					var gists = serverResponse;
+					var gistsArray = [];
+					for (var i = 0; i < gists.length; i ++) {
+						var g = new gist(gists[i].description, gists[i].id, gists[i].url);
+						gistsArray.push(g);
+						g.convertToHtml();
+					}
+				}else {
+					alert("Error!");
 				}
-			}
-		} else {
-			alert("Error!");
-		}
+			} 
+		
 	}
 }
+
 
 makeAjaxCall(_url);
