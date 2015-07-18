@@ -73,8 +73,10 @@ function makeAjaxCall(url) {
 						var g = new gist(gists[i].description, gists[i].id, gists[i].url);
 						
 						gistsArray.push(g);
-						bigArray.push(g);
 						g.convertToHtml();
+						bigArray.push(g);
+						localStorage.setItem("gists", (JSON.stringify(bigArray)));
+						
 					}
 				} else {
 					alert("Error!");
@@ -84,23 +86,21 @@ function makeAjaxCall(url) {
 	}
 
 }
-/*function checklocalstorage(){
+function checklocalstorage(){
 	var gists = localStorage.getItem("gists");
-	if(gists == null){
+	if(gists === "[]" | gists === null){
 		makeAjaxCall(_url);
 		makeAjaxCall(_url2);
-		localStorage.setItem("gists", JSON.stringify(bigArray));
+		
 	}else{
-		//makeAjaxCall(_url);
-		//makeAjaxCall(_url2);
-		//localStorage["gists"] = JSON.stringify(bigArray);
-		alert("yay");
+		var parsedArray = JSON.parse(localStorage.getItem("gists"));
+		for (var i = 0; i < parsedArray.length; i ++) {
+			var g = new gist(parsedArray[i].description, parsedArray[i].id, parsedArray[i].url);
+			g.convertToHtml();
+		}
+	
+	//alert("localStorage: gists - filled with " parsedArray.length "gists");
 		}
 }
-checklocalstorage();*/
-makeAjaxCall(_url);
-makeAjaxCall(_url2);
-if(localStorage.getItem("gists") == null){
-		localStorage.setItem("gists", JSON.stringify(bigArray));
-}
+checklocalstorage();
 
