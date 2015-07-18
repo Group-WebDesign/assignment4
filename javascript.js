@@ -1,7 +1,10 @@
 //javascript functions
 
-var _url = "https://api.github.com/gists";
+var _url = "https://api.github.com/gists?page=1&per_page=100";
+var _url2 = "https://api.github.com/gists?page=2&per_page=50";
 var gistsDom =  document.getElementById("gists");
+
+var bigArray = []; 
 
 window.onload = function() {
 	var submitButton = document.getElementById("tfq");
@@ -70,6 +73,7 @@ function makeAjaxCall(url) {
 						var g = new gist(gists[i].description, gists[i].id, gists[i].url);
 						
 						gistsArray.push(g);
+						bigArray.push(g);
 						g.convertToHtml();
 					}
 				} else {
@@ -78,9 +82,25 @@ function makeAjaxCall(url) {
 			} 
 		
 	}
+
 }
-
+/*function checklocalstorage(){
+	var gists = localStorage.getItem("gists");
+	if(gists == null){
+		makeAjaxCall(_url);
+		makeAjaxCall(_url2);
+		localStorage.setItem("gists", JSON.stringify(bigArray));
+	}else{
+		//makeAjaxCall(_url);
+		//makeAjaxCall(_url2);
+		//localStorage["gists"] = JSON.stringify(bigArray);
+		alert("yay");
+		}
+}
+checklocalstorage();*/
 makeAjaxCall(_url);
-
-
+makeAjaxCall(_url2);
+if(localStorage.getItem("gists") == null){
+		localStorage.setItem("gists", JSON.stringify(bigArray));
+}
 
