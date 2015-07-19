@@ -1,10 +1,11 @@
 //javascript functions
 
 var _url = "https://api.github.com/gists?page=1&per_page=100";
-var _url2 = "https://api.github.com/gists?page=2&per_page=50";
+var _url2 = "https://api.github.com/gists?page=50&per_page=50";
 var gistsDom =  document.getElementById("gists");
 
 var bigArray = []; 
+var pageNumber = localStorage.getItem("pageNumber");
 
 window.onload = function() {
 	var submitButton = document.getElementById("tfq");
@@ -37,6 +38,7 @@ function gist (description, id, html_url) {
 		var url = document.createElement("div");
 		var description = document.createElement("div");
 		var id = document.createElement("div");
+		
 
 		url.className = "gistsUrl";
 		id.className = "gistsId";
@@ -59,7 +61,6 @@ function makeAjaxCall(url) {
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open("GET", url, true);
 	httpRequest.send(null);
-
 	httpRequest.onreadystatechange = function() {
 			if(httpRequest.readyState == 4) {
 				if (httpRequest.status == 200) {
@@ -73,34 +74,71 @@ function makeAjaxCall(url) {
 						var g = new gist(gists[i].description, gists[i].id, gists[i].url);
 						
 						gistsArray.push(g);
-						g.convertToHtml();
 						bigArray.push(g);
-						localStorage.setItem("gists", (JSON.stringify(bigArray)));
-						
 					}
+					
+					localStorage.setItem("gists", (JSON.stringify(bigArray)));
 				} else {
 					alert("Error!");
 				}
+			
 			} 
 		
 	}
 
 }
+
 function checklocalstorage(){
 	var gists = localStorage.getItem("gists");
+	var gistsFromLocal = JSON.parse(localStorage.getItem("gists"));
+	pageNumber = 1;
 	if(gists === "[]" | gists === null){
 		makeAjaxCall(_url);
 		makeAjaxCall(_url2);
 		
+		pages(pageNumber);
+		
 	}else{
-		var parsedArray = JSON.parse(localStorage.getItem("gists"));
-		for (var i = 0; i < parsedArray.length; i ++) {
-			var g = new gist(parsedArray[i].description, parsedArray[i].id, parsedArray[i].url);
-			g.convertToHtml();
-		}
-	
-	//alert("localStorage: gists - filled with " parsedArray.length "gists");
+		
+		bigArray = gistsFromLocal;
+		pages(pageNumber);
+		
 		}
 }
+
+function pages(page){
+	
+	document.getElementById("gists").innerHTML = " ";
+	
+	pageNumber = page;
+	localStorage.setItem("pageNumber", (pageNumber));
+	var start = 0;
+	var stop = 29;
+	if(pageNumber == 1){
+		start = 0;
+		stop = 29;
+	}
+	if(pageNumber == 2){
+		start = 30;
+		stop = 59;
+	}
+	if(pageNumber == 3){
+		start = 60;
+		stop = 89;
+	}
+	if(pageNumber == 4){
+		start = 90;
+		stop = 119;
+	}
+	if(pageNumber == 5){
+		start = 120;
+		stop = 149;
+	}
+	for (var i = start; i < stop; i ++) {
+		var g = new gist(bigArray[i].description, bigArray[i].id, bigArray[i].url);
+		g.convertToHtml();
+	}
+}
+
 checklocalstorage();
 
