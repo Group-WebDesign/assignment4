@@ -3,6 +3,7 @@
 var _url = "https://api.github.com/gists?page=1&per_page=100";
 var _url2 = "https://api.github.com/gists?page=50&per_page=50";
 var gistsDom =  document.getElementById("gists");
+var favoritesDom = document.getElementById("favorites");
 
 var bigArray = []; 
 var pageNumber = localStorage.getItem("pageNumber");
@@ -16,6 +17,7 @@ window.onload = function() {
 			}
 		});
 	}
+	loadXMLDoc();
 }
 
 function loadXMLDoc() {
@@ -32,17 +34,63 @@ function gist (description, id, html_url) {
 	this.description = description;
 	this.id = id;
 	this.url = html_url;
+	this.favoritesButton = "Favorite";
+	this.convertToHtml = function () {
+		var holder = document.createElement("div");
+		holder.className = "gistsHolder";
+		
+		var url = document.createElement("div");
+		var description = document.createElement("div");
+		var id = document.createElement("div");
+		var favoritesButton = document.createElement("button");
+		
+		url.className = "gistsUrl";
+		id.className = "gistsId";
+		description.className =	"gistsDescription";
+		favoritesButton.className = "gistsFavorite Button";
+
+		description.innerHTML = this.description;	
+		id.innerHTML = this.id
+		url.innerHTML = this.url;
+		favoritesButton.innerHTML = this.favoritesButton;
+		
+		holder.appendChild(description);
+		holder.appendChild(url);
+		holder.appendChild(id);
+		holder.appendChild(favoritesButton);
+
+		gistsDom.appendChild(holder);
+		
+		favoritesButton.onclick = function favoritesFunction(){
+			storeFavorite(holder);
+		}
+	}
+}
+function storeFavorite(lastFavorite){
+		localStorage.setItem("favorites", (JSON.stringify(lastFavorite)));
+		favoritesDom.appendChild(lastFavorite);
+}
+/*
+function gistFavorites (description, id, html_url) {
+	this.description = description;
+	this.id = id;
+	this.url = html_url;
+	this.removeButton = "Remove";
 	this.convertToHtml = function () {
 		var holder = document.createElement("div");
 		holder.className = "gistsHolder";
 		var url = document.createElement("div");
 		var description = document.createElement("div");
 		var id = document.createElement("div");
-		
+		var removeButton = document.createElement("button");
+		removeButton.onclick = function removeFunction(){
+			
+		}
 
 		url.className = "gistsUrl";
 		id.className = "gistsId";
 		description.className =	"gistsDescription";
+		favoritesButton.className = "gistsFavorite Button";
 
 		description.innerHTML = this.description;
 		
@@ -50,13 +98,17 @@ function gist (description, id, html_url) {
 
 		url.innerHTML = this.url;
 
+		removeButton.innerHTML = this.removeButton;
+		
 		holder.appendChild(description);
 		holder.appendChild(url);
 		holder.appendChild(id);
+		holder.appendChild(removeButton);
 
 		gistsDom.appendChild(holder);
 	}
 }
+*/
 function makeAjaxCall(url) {
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open("GET", url, true);
@@ -91,7 +143,7 @@ function makeAjaxCall(url) {
 function checklocalstorage(){
 	var gists = localStorage.getItem("gists");
 	var gistsFromLocal = JSON.parse(localStorage.getItem("gists"));
-	pageNumber = 1;
+
 	if(gists === "[]" | gists === null){
 		makeAjaxCall(_url);
 		makeAjaxCall(_url2);
@@ -111,7 +163,7 @@ function pages(page){
 	document.getElementById("gists").innerHTML = " ";
 	
 	pageNumber = page;
-	localStorage.setItem("pageNumber", (pageNumber));
+	localStorage.setItem("pageNumber", pageNumber);
 	var start = 0;
 	var stop = 29;
 	if(pageNumber == 1){
@@ -141,4 +193,3 @@ function pages(page){
 }
 
 checklocalstorage();
-
