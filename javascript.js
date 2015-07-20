@@ -1,10 +1,12 @@
 //javascript functions
 
 var _url = "https://api.github.com/gists?page=1&per_page=100";
-var _url2 = "https://api.github.com/gists?page=2&per_page=50";
+var _url2 = "https://api.github.com/gists?page=50&per_page=50";
 var gistsDom =  document.getElementById("gists");
+var favoritesDom = document.getElementById("favorites");
 
 var bigArray = []; 
+var pageNumber = localStorage.getItem("pageNumber");
 
 window.onload = function() {
 	var submitButton = document.getElementById("tfq");
@@ -15,6 +17,7 @@ window.onload = function() {
 			}
 		});
 	}
+	loadXMLDoc();
 }
 
 function loadXMLDoc() {
@@ -31,16 +34,63 @@ function gist (description, id, html_url) {
 	this.description = description;
 	this.id = id;
 	this.url = html_url;
+	this.favoritesButton = "Favorite";
+	this.convertToHtml = function () {
+		var holder = document.createElement("div");
+		holder.className = "gistsHolder";
+		
+		var url = document.createElement("div");
+		var description = document.createElement("div");
+		var id = document.createElement("div");
+		var favoritesButton = document.createElement("button");
+		
+		url.className = "gistsUrl";
+		id.className = "gistsId";
+		description.className =	"gistsDescription";
+		favoritesButton.className = "gistsFavorite Button";
+
+		description.innerHTML = this.description;	
+		id.innerHTML = this.id
+		url.innerHTML = this.url;
+		favoritesButton.innerHTML = this.favoritesButton;
+		
+		holder.appendChild(description);
+		holder.appendChild(url);
+		holder.appendChild(id);
+		holder.appendChild(favoritesButton);
+
+		gistsDom.appendChild(holder);
+		
+		favoritesButton.onclick = function favoritesFunction(){
+			storeFavorite(holder);
+		}
+	}
+}
+function storeFavorite(lastFavorite){
+		localStorage.setItem("favorites", (JSON.stringify(lastFavorite)));
+		favoritesDom.appendChild(lastFavorite);
+}
+/*
+function gistFavorites (description, id, html_url) {
+	this.description = description;
+	this.id = id;
+	this.url = html_url;
+	this.removeButton = "Remove";
 	this.convertToHtml = function () {
 		var holder = document.createElement("div");
 		holder.className = "gistsHolder";
 		var url = document.createElement("div");
 		var description = document.createElement("div");
 		var id = document.createElement("div");
+		var removeButton = document.createElement("button");
+		removeButton.onclick = function removeFunction(){
+			
+		}
 
 		url.className = "gistsUrl";
 		id.className = "gistsId";
 		description.className =	"gistsDescription";
+		favoritesButton.className = "gistsFavorite Button";
 
 		description.innerHTML = this.description;
 		
@@ -48,18 +98,21 @@ function gist (description, id, html_url) {
 
 		url.innerHTML = this.url;
 
+		removeButton.innerHTML = this.removeButton;
+		
 		holder.appendChild(description);
 		holder.appendChild(url);
 		holder.appendChild(id);
+		holder.appendChild(removeButton);
 
 		gistsDom.appendChild(holder);
 	}
 }
+*/
 function makeAjaxCall(url) {
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open("GET", url, true);
 	httpRequest.send(null);
-
 	httpRequest.onreadystatechange = function() {
 			if(httpRequest.readyState == 4) {
 				if (httpRequest.status == 200) {
@@ -74,33 +127,69 @@ function makeAjaxCall(url) {
 						
 						gistsArray.push(g);
 						bigArray.push(g);
-						g.convertToHtml();
 					}
+					
+					localStorage.setItem("gists", (JSON.stringify(bigArray)));
 				} else {
 					alert("Error!");
 				}
+			
 			} 
 		
 	}
 
 }
-/*function checklocalstorage(){
+
+function checklocalstorage(){
 	var gists = localStorage.getItem("gists");
-	if(gists == null){
+	var gistsFromLocal = JSON.parse(localStorage.getItem("gists"));
+
+	if(gists === "[]" | gists === null){
 		makeAjaxCall(_url);
 		makeAjaxCall(_url2);
-		localStorage.setItem("gists", JSON.stringify(bigArray));
+		
+		pages(pageNumber);
+		
 	}else{
-		//makeAjaxCall(_url);
-		//makeAjaxCall(_url2);
-		//localStorage["gists"] = JSON.stringify(bigArray);
-		alert("yay");
+		
+		bigArray = gistsFromLocal;
+		pages(pageNumber);
+		
 		}
 }
-checklocalstorage();*/
-makeAjaxCall(_url);
-makeAjaxCall(_url2);
-if(localStorage.getItem("gists") == null){
-		localStorage.setItem("gists", JSON.stringify(bigArray));
+
+function pages(page){
+	
+	document.getElementById("gists").innerHTML = " ";
+	
+	pageNumber = page;
+	localStorage.setItem("pageNumber", pageNumber);
+	var start = 0;
+	var stop = 29;
+	if(pageNumber == 1){
+		start = 0;
+		stop = 29;
+	}
+	if(pageNumber == 2){
+		start = 30;
+		stop = 59;
+	}
+	if(pageNumber == 3){
+		start = 60;
+		stop = 89;
+	}
+	if(pageNumber == 4){
+		start = 90;
+		stop = 119;
+	}
+	if(pageNumber == 5){
+		start = 120;
+		stop = 149;
+	}
+	for (var i = start; i < stop; i ++) {
+		var g = new gist(bigArray[i].description, bigArray[i].id, bigArray[i].url);
+		g.convertToHtml();
+	}
 }
 
+checklocalstorage();
