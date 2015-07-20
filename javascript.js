@@ -1,3 +1,5 @@
+//javascript functions
+
 var _url = "https://api.github.com/gists?page=1&per_page=100";
 var _url2 = "https://api.github.com/gists?page=50&per_page=50";
 var gistsDom =  document.getElementById("gists");
@@ -46,21 +48,19 @@ function gist (Description, ID, html_url) {
 		id.innerHTML = this.id
 		url.innerHTML = this.url;
 		favoritesButton.innerHTML = this.favoritesButton;
-
+		
 		var link = html_url;
 		var element = document.createElement('a');
 		element.setAttribute("href", link);
 		element.innerHTML = Description;
 		holder.appendChild(element);
-
+		
 		holder.appendChild(description);
 		holder.appendChild(url);
 		holder.appendChild(id);
 		holder.appendChild(favoritesButton);
 
 		gistsDom.appendChild(holder);
-
-
 		
 		favoritesButton.onclick = function favoritesFunction(){
 			var f = new gistFavorites(Description, ID, html_url);
@@ -68,9 +68,6 @@ function gist (Description, ID, html_url) {
 			localStorage.setItem("favorites", JSON.stringify(favoritesArray));
 			f.convertToHtml();
 		}
-
-
-
 	}
 }
 
