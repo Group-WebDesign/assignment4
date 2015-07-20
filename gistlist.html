@@ -9,16 +9,12 @@
 	<body>
 		<h1>Find Some Gists!</h1>	
 		
-		<!-- search bar -->
+		
 		<div id="topheader">
-			<form id="topnewsearch" method="get" action="http://www.google.com">
-			<!-- Set to google rather than blank -->
-		        <input style="float: right; margin-left:-10px; margin-bottom: 20px; margin-top: 20px; margin-right:30px;" type="submit" value="Search" class="topbutton">
-		        <input style="float: right; margin:20px; width:25%" type="text" id="tfq" class="toptextinput" name="q" size="21" maxlength="120" value= "Enter keywords...">
-			</form>
+		        <button onclick="updateAPI()" style="float: right; margin-left:-10px; margin-bottom: 20px; margin-top: 20px; margin-right:30px;"  class="topbutton">Search</button>
 			<div class="topclear"></div>
 		</div>
-		<!-- search bar -->	
+		
 
 		<div class="task-holder">
 			<button onclick="pages(1)">1</button>
