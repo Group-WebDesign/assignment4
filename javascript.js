@@ -9,14 +9,7 @@ var favoritesArray = [];
 var favoritesArray2 = [];
 
 window.onload = function() {
-	var submitButton = document.getElementById("tfq");
-	if (submitButton.addEventListener) {
-		submitButton.addEventListener("click", function(){
-			if(submitButton.value == "Enter keywords...") {
-				submitButton.value = "";
-			}
-		});
-	}
+	
 	loadXMLDoc();
 }
 
@@ -172,6 +165,12 @@ function checklocalstorage(){
 		
 	}
 	
+}
+
+function updateAPI(){
+	localStorage.removeItem("gists");
+	makeAjaxCall(_url);
+	makeAjaxCall(_url2);
 }
 
 function loadFavorites(){
