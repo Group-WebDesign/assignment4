@@ -7,6 +7,8 @@ var favoritesDom = document.getElementById("favorites");
 
 var bigArray = []; 
 var pageNumber = localStorage.getItem("pageNumber");
+var favoritesArray = [];
+var favoritesArray2 = [];
 
 window.onload = function() {
 	var submitButton = document.getElementById("tfq");
@@ -30,9 +32,9 @@ function loadXMLDoc() {
 	}
 }
 
-function gist (description, id, html_url) {
-	this.description = description;
-	this.id = id;
+function gist (Description, ID, html_url) {
+	this.description = Description;
+	this.id = ID;
 	this.url = html_url;
 	this.favoritesButton = "Favorite";
 	this.convertToHtml = function () {
@@ -47,7 +49,7 @@ function gist (description, id, html_url) {
 		url.className = "gistsUrl";
 		id.className = "gistsId";
 		description.className =	"gistsDescription";
-		favoritesButton.className = "gistsFavorite Button";
+		favoritesButton.className = "gistsFavoriteButton";
 
 		description.innerHTML = this.description;	
 		id.innerHTML = this.id
@@ -62,18 +64,18 @@ function gist (description, id, html_url) {
 		gistsDom.appendChild(holder);
 		
 		favoritesButton.onclick = function favoritesFunction(){
-			storeFavorite(holder);
+			var f = new gistFavorites(Description, ID, html_url);
+			favoritesArray.push(f);
+			localStorage.setItem("favorites", JSON.stringify(favoritesArray));
+			f.convertToHtml();
 		}
 	}
 }
-function storeFavorite(lastFavorite){
-		localStorage.setItem("favorites", (JSON.stringify(lastFavorite)));
-		favoritesDom.appendChild(lastFavorite);
-}
-/*
-function gistFavorites (description, id, html_url) {
-	this.description = description;
-	this.id = id;
+
+
+function gistFavorites (Description, ID, html_url) {
+	this.description = Description;
+	this.id = ID;
 	this.url = html_url;
 	this.removeButton = "Remove";
 	this.convertToHtml = function () {
@@ -83,32 +85,28 @@ function gistFavorites (description, id, html_url) {
 		var description = document.createElement("div");
 		var id = document.createElement("div");
 		var removeButton = document.createElement("button");
-		removeButton.onclick = function removeFunction(){
-			
-		}
-
+		
 		url.className = "gistsUrl";
 		id.className = "gistsId";
 		description.className =	"gistsDescription";
-		favoritesButton.className = "gistsFavorite Button";
-
+		removeButton.className = "gistsRemoveButton";
 		description.innerHTML = this.description;
 		
 		id.innerHTML = this.id;
-
 		url.innerHTML = this.url;
-
 		removeButton.innerHTML = this.removeButton;
 		
 		holder.appendChild(description);
 		holder.appendChild(url);
 		holder.appendChild(id);
 		holder.appendChild(removeButton);
-
-		gistsDom.appendChild(holder);
+		favoritesDom.appendChild(holder);
+		removeButton.onclick = function removeFunction(){
+			
+		}
 	}
 }
-*/
+
 function makeAjaxCall(url) {
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open("GET", url, true);
@@ -143,6 +141,7 @@ function makeAjaxCall(url) {
 function checklocalstorage(){
 	var gists = localStorage.getItem("gists");
 	var gistsFromLocal = JSON.parse(localStorage.getItem("gists"));
+	var favoriteLocalGists = JSON.parse(localStorage.getItem("favorites"));
 
 	if(gists === "[]" | gists === null){
 		makeAjaxCall(_url);
@@ -151,11 +150,20 @@ function checklocalstorage(){
 		pages(pageNumber);
 		
 	}else{
-		
+		favoritesArray2 = favoriteLocalGists;
 		bigArray = gistsFromLocal;
 		pages(pageNumber);
+		loadFavorites();
 		
-		}
+	}
+	
+}
+
+function loadFavorites(){
+	for (var i = 0; i < favoritesArray2.length; i ++) {
+		var g = new gistFavorites(favoritesArray2[i].description, favoritesArray2[i].id, favoritesArray2[i].url);
+		g.convertToHtml();
+	}
 }
 
 function pages(page){
